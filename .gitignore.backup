@@ -1,0 +1,96 @@
+# ============================================
+# Terraform Official Template
+# ============================================
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+.terraformrc
+terraform.rc
+
+# ============================================
+# Important: Keep Example Files
+# ============================================
+!terraform.tfvars.example
+!**/*.example
+!.env.example
+
+# ============================================
+# Pulumi (Assignment 2)
+# ============================================
+.pulumi/
+Pulumi.*.yaml
+
+# ============================================
+# Python (Assignments 4 & 5)
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# ============================================
+# Azure
+# ============================================
+.azure/
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+*.pem
+*.key
+secrets/
+credentials.json
+
+# ============================================
+# Operating System
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================
+# IDEs & Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+
+# ============================================
+# Optional: Large Files
+# ============================================
+# Uncomment if you have large presentations
+# *.pptx
+# *.pdf
