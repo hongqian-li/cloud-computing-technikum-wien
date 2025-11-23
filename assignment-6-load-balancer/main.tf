@@ -166,3 +166,21 @@ resource "azurerm_lb_probe" "main" {
   interval_in_seconds = 15
   number_of_probes    = 2
 }
+
+# ============================================
+# Step 6: Load Balancing Rule
+# ============================================
+
+resource "azurerm_lb_rule" "main" {
+  loadbalancer_id                = azurerm_lb.main.id
+  name                           = "${var.prefix}-http-rule"
+  protocol                       = "Tcp" #Layer 4: TCP (Transport) ← Load Balancer
+  frontend_port                  = 80
+  backend_port                   = 80
+  frontend_ip_configuration_name = "PublicIPAddress"
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.main.id]
+  probe_id                       = azurerm_lb_probe.main.id
+  enable_floating_ip             = false
+  idle_timeout_in_minutes        = 4
+  load_distribution              = "Default"
+}
