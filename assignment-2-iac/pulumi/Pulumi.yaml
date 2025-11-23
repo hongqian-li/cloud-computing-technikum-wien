@@ -1,0 +1,16 @@
+name: pulumi-assignment-02
+description: Assignment 2 - Infrastructure as Code with Pulumi. Creates Azure Resource Group and Storage Account with ZRS replication.
+runtime:
+  name: python
+  options:
+    toolchain: pip
+    virtualenv: venv
+
+config:
+  pulumi:tags:
+    value:
+      Project: assignment-2-iac
+      Tool: Pulumi
+      Language: Python
+      Course: Cloud-Computing
+      Institution: UAS-Technikum-Wien

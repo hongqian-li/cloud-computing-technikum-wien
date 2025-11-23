@@ -1,0 +1,8 @@
+# Pulumi.example.yaml
+# Copy this to create your own stack: Pulumi.dev.yaml
+
+config:
+  azure-native:location: norwayeast
+  pulumi-assignment-02:storageAccountName: stassignment2pulumi
+  pulumi-assignment-02:storageSku: Standard_ZRS
+  pulumi-assignment-02:resourceGroupName: rg-assignment2-pulumi
