@@ -1,37 +1,96 @@
-# Local .terraform directories
+# ============================================
+# Terraform Official Template
+# ============================================
 .terraform/
-
-# .tfstate files
 *.tfstate
 *.tfstate.*
-
-# Crash log files
 crash.log
 crash.*.log
-
-# Exclude all .tfvars files, which are likely to contain sensitive data, such as
-# password, private keys, and other secrets. These should not be part of version 
-# control as they are data points which are potentially sensitive and subject 
-# to change depending on the environment.
 *.tfvars
 *.tfvars.json
-
-# Ignore override files as they are usually used to override resources locally and so
-# are not checked in
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
-
-# Ignore transient lock info files created by terraform apply
 .terraform.tfstate.lock.info
-
-# Include override files you do wish to add to version control using negated pattern
-# !example_override.tf
-
-# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
-# example: *tfplan*
-
-# Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# ============================================
+# Important: Keep Example Files
+# ============================================
+!terraform.tfvars.example
+!**/*.example
+!.env.example
+
+# ============================================
+# Pulumi (Assignment 2)
+# ============================================
+.pulumi/
+Pulumi.*.yaml
+
+# ============================================
+# Python (Assignments 4 & 5)
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# ============================================
+# Azure
+# ============================================
+.azure/
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+*.pem
+*.key
+secrets/
+credentials.json
+
+# ============================================
+# Operating System
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================
+# IDEs & Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+
+# ============================================
+# Optional: Large Files
+# ============================================
+# Uncomment if you have large presentations
+# *.pptx
+# *.pdf
