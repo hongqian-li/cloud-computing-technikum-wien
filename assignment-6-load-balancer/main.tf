@@ -118,3 +118,37 @@ resource "azurerm_public_ip" "main" {
   sku                 = var.sku_public_ip
   zones               = var.public_ip_zones
 }
+
+# ============================================
+# Step 4: Load Balancer
+# ============================================
+
+resource "azurerm_lb" "main" {
+  name                = "${var.prefix}-load-balancer"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  sku                 = var.azurerm_lb_sku
+
+  frontend_ip_configuration {
+    name                 = var.frontend_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.main.id
+  }
+}
+
+# Backend Address Pool - where VMs will be added
+resource "azurerm_lb_backend_address_pool" "main" {
+  loadbalancer_id = azurerm_lb.main.id
+  name            = var.lb_backend_address_pool_name
+}
+
+# Outbound Rule - allows VMs to access internet
+resource "azurerm_lb_outbound_rule" "main" {
+  name                    = var.lb_outbound_rule_name
+  loadbalancer_id         = azurerm_lb.main.id
+  protocol                = var.lb_outbound_rule_protocol
+  backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
+
+  frontend_ip_configuration {
+    name = var.frontend_ip_configuration_name
+  }
+}

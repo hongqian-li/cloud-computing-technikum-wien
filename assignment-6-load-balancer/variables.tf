@@ -73,3 +73,34 @@ variable "public_ip_zones" {
   type        = list(string)
   default     = ["1", "2", "3"]
 }
+
+variable "azurerm_lb_sku" {
+  description = "SKU for Load Balancer"
+  type        = string
+  default     = "Standard"
+}
+
+variable "lb_outbound_rule_protocol" {
+  description = "Protocol for Load Balancer outbound rule"
+  type        = string
+  default     = "All"
+}
+
+variable "frontend_ip_configuration_name" {
+  description = "Frontend IP configuration name for Load Balancer"
+  type        = string
+  default     = "PublicIPAddress"
+}
+
+variable "lb_backend_address_pool_name" {
+  description = "Backend address pool name for Load Balancer"
+  type        = string
+  default     = "BackendPool"
+}
+
+variable "lb_outbound_rule_name" {
+  description = "Name for Load Balancer outbound rule"
+  type        = string
+  default     = "OutboundRule"
+  
+}
