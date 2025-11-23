@@ -16,3 +16,8 @@ output "backend_pool_id" {
   description = "ID of the backend address pool"
   value       = azurerm_lb_backend_address_pool.main.id
 }
+
+output "lb_rule_id" {
+  description = "ID of the load balancing rule"
+  value       = azurerm_lb_rule.main.id
+}
