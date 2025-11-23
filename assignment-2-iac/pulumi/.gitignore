@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.venv/
+ENV/
+*.egg-info/
+.Python
+build/
+dist/
+
+# Pulumi
+.pulumi/
+Pulumi.*.yaml
+!Pulumi.example.yaml
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
