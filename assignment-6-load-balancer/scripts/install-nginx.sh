@@ -13,7 +13,7 @@ sudo apt-get install -y nginx
 # Get VM hostname
 HOSTNAME=$(hostname)
 
-# Create custom index.html
+# Create custom index.html - using EOF without quotes to allow variable expansion
 cat <<EOF | sudo tee /var/www/html/index.html
 <!DOCTYPE html>
 <html>
@@ -56,12 +56,19 @@ cat <<EOF | sudo tee /var/www/html/index.html
     <div class="container">
         <h1>🚀 Load Balancer Working!</h1>
         <p>You are connected to:</p>
-        <p class="hostname">\$HOSTNAME</p>
+        <p class="hostname">$HOSTNAME</p>
         <p>Refresh the page to see load balancing!</p>
     </div>
 </body>
 </html>
 EOF
+
+# Remove default Nginx page if it exists
+sudo rm -f /var/www/html/index.nginx-debian.html
+
+# Set proper permissions
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
 
 # Start and enable Nginx
 sudo systemctl start nginx
@@ -69,3 +76,5 @@ sudo systemctl enable nginx
 
 # Check status
 sudo systemctl status nginx
+
+echo "Nginx installation completed. Hostname: $HOSTNAME"
