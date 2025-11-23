@@ -170,7 +170,7 @@ The Load Balancer automatically:
 
 Hongqian Li, Bienias Kamil, Paradzik Marko, Zelimchanow Chamberg, Ramazanov Muslim
 
-UAS Technikum Wien - Cloud Computing - Winter 2024/2025
+UAS Technikum Wien - Cloud Computing 
 
 ---
 
