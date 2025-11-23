@@ -101,4 +101,7 @@ resource "azurerm_linux_virtual_machine" "main" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  # Install Nginx automatically on boot
+  custom_data = base64encode(file("${path.module}/scripts/install-nginx.sh"))
 }
