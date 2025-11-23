@@ -14,6 +14,16 @@ terraform {
       version = "~> 3.0"
     }
   }
+
+  # ============================================
+  # Remote State Backend Configuration
+  # ============================================
+  backend "azurerm" {
+    resource_group_name  = "rg-test-deployment-dev"
+    storage_account_name = "wi25x010terraformstate"
+    container_name       = "tfstate"
+    key                  = "assignment-6-loadbalancer.tfstate"
+  }
 }
 
 provider "azurerm" {
