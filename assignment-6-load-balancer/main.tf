@@ -159,7 +159,7 @@ resource "azurerm_lb_outbound_rule" "main" {
 
 resource "azurerm_lb_probe" "main" {
   loadbalancer_id     = azurerm_lb.main.id
-  name                = "http-probe"
+  name                = "${var.prefix}-http-probe"
   protocol            = "Http"
   port                = 80
   request_path        = "/"
