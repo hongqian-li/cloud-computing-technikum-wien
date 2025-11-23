@@ -114,9 +114,9 @@ resource "azurerm_public_ip" "main" {
   name                = "${var.prefix}-public-ip"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  allocation_method   = var.allocation_method
-  sku                 = var.sku_public_ip
-  zones               = var.public_ip_zones
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  zones               = ["1", "2", "3"]
 }
 
 # ============================================
@@ -127,10 +127,10 @@ resource "azurerm_lb" "main" {
   name                = "${var.prefix}-load-balancer"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  sku                 = var.azurerm_lb_sku
+  sku                 = "Standard"
 
   frontend_ip_configuration {
-    name                 = var.frontend_ip_configuration_name
+    name                 = "PublicIPAddress"
     public_ip_address_id = azurerm_public_ip.main.id
   }
 }
@@ -138,17 +138,31 @@ resource "azurerm_lb" "main" {
 # Backend Address Pool - where VMs will be added
 resource "azurerm_lb_backend_address_pool" "main" {
   loadbalancer_id = azurerm_lb.main.id
-  name            = var.lb_backend_address_pool_name
+  name            = "BackendPool"
 }
 
 # Outbound Rule - allows VMs to access internet
 resource "azurerm_lb_outbound_rule" "main" {
-  name                    = var.lb_outbound_rule_name
+  name                    = "OutboundRule"
   loadbalancer_id         = azurerm_lb.main.id
-  protocol                = var.lb_outbound_rule_protocol
+  protocol                = "All"
   backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
 
   frontend_ip_configuration {
-    name = var.frontend_ip_configuration_name
+    name = "PublicIPAddress"
   }
+}
+
+# ============================================
+# Step 5: Health Probe
+# ============================================
+
+resource "azurerm_lb_probe" "main" {
+  loadbalancer_id     = azurerm_lb.main.id
+  name                = "http-probe"
+  protocol            = "Http"
+  port                = 80
+  request_path        = "/"
+  interval_in_seconds = 15
+  number_of_probes    = 2
 }
