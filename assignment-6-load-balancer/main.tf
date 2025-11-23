@@ -151,17 +151,17 @@ resource "azurerm_lb_backend_address_pool" "main" {
   name            = "BackendPool"
 }
 
-# Outbound Rule - allows VMs to access internet
-resource "azurerm_lb_outbound_rule" "main" {
-  name                    = "OutboundRule"
-  loadbalancer_id         = azurerm_lb.main.id
-  protocol                = "All"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
+# # Outbound Rule - allows VMs to access internet
+# resource "azurerm_lb_outbound_rule" "main" {
+#   name                    = "OutboundRule"
+#   loadbalancer_id         = azurerm_lb.main.id
+#   protocol                = "All"
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.main.id
 
-  frontend_ip_configuration {
-    name = "PublicIPAddress"
-  }
-}
+#   frontend_ip_configuration {
+#     name = "PublicIPAddress"
+#   }
+# }
 
 # ============================================
 # Step 5: Health Probe
