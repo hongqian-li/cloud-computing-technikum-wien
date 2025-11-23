@@ -105,3 +105,16 @@ resource "azurerm_linux_virtual_machine" "main" {
   # Install Nginx automatically on boot
   custom_data = base64encode(file("${path.module}/scripts/install-nginx.sh"))
 }
+
+# ============================================
+# Step 3: Public IP for Load Balancer
+# ============================================
+
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-public-ip"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  allocation_method   = var.allocation_method
+  sku                 = var.sku_public_ip
+  zones               = var.public_ip_zones
+}

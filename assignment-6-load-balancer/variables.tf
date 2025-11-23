@@ -55,3 +55,21 @@ variable "ssh_public_key_path" {
   type        = string
   default     = null
 }
+
+variable "allocation_method" {
+  description = "Allocation method for Public IP"
+  type        = string
+  default     = "Static"
+}
+
+variable "sku_public_ip" {
+  description = "SKU for Public IP"
+  type        = string
+  default     = "Standard"
+}
+
+variable "public_ip_zones" {
+  description = "Availability zones for Public IP"
+  type        = list(string)
+  default     = ["1", "2", "3"]
+}
