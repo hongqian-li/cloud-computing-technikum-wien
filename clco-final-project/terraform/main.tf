@@ -235,3 +235,76 @@ resource "azurerm_private_endpoint" "sql_pe" {
 
   tags = var.tags
 }
+
+# ============================================
+# Phase 6: App Service Plan, Application Insights, and Web App
+# ============================================
+
+# App Service Plan
+resource "azurerm_service_plan" "asp" {
+  name                = "${local.name_prefix}-asp"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  os_type             = "Linux"
+  sku_name            = "B1"
+
+  tags = var.tags
+}
+
+# Application Insights
+resource "azurerm_application_insights" "app_insights" {
+  name                = "${local.name_prefix}-appinsights"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+
+  tags = var.tags
+  
+  lifecycle {
+    ignore_changes = [workspace_id]
+  }
+}
+
+# Linux Web App
+resource "azurerm_linux_web_app" "app" {
+  name                = "${local.name_prefix}-webapp"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  service_plan_id     = azurerm_service_plan.asp.id
+
+  https_only = true
+
+  site_config {
+    always_on         = true
+    ftps_state        = "Disabled"
+    minimum_tls_version = "1.2"
+    vnet_route_all_enabled = true
+
+    application_stack {
+      python_version = "3.11"
+    }
+  }
+
+  app_settings = {
+    "STORAGE_CONNECTION_STRING"             = azurerm_storage_account.sa.primary_connection_string
+    "STORAGE_ACCOUNT_NAME"                  = azurerm_storage_account.sa.name
+    "STORAGE_CONTAINER_UPLOAD"              = azurerm_storage_container.uploads.name
+    "SQL_SERVER_FQDN"                       = azurerm_mssql_server.sql_server.fully_qualified_domain_name
+    "SQL_DATABASE"                          = azurerm_mssql_database.sql_db.name
+    "SQL_USERNAME"                          = var.sql_admin_username
+    "SQL_PASSWORD"                          = var.sql_admin_password
+    "MAX_UPLOAD_BYTES"                      = tostring(var.max_upload_bytes)
+    "ALLOWED_FILE_TYPES"                    = join(",", var.allowed_file_types)
+    "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.app_insights.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.app_insights.connection_string
+    "SCM_DO_BUILD_DURING_DEPLOYMENT"        = "true"
+  }
+
+  tags = var.tags
+}
+
+# VNet Integration
+resource "azurerm_app_service_virtual_network_swift_connection" "app_vnet_integration" {
+  app_service_id = azurerm_linux_web_app.app.id
+  subnet_id      = azurerm_subnet.subnet_app.id
+}
