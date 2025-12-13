@@ -128,3 +128,61 @@ resource "azurerm_storage_container" "tfstate" {
   storage_account_name  = azurerm_storage_account.sa.name
   container_access_type = "private"
 }
+
+# ============================================
+# Phase 4: Private DNS Zones and Private Endpoints
+# ============================================
+
+# Private DNS Zone for Blob Storage
+resource "azurerm_private_dns_zone" "blob_dns" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.rg.name
+  tags                = var.tags
+}
+
+# Private DNS Zone for SQL Database
+resource "azurerm_private_dns_zone" "sql_dns" {
+  name                = "privatelink.database.windows.net"
+  resource_group_name = azurerm_resource_group.rg.name
+  tags                = var.tags
+}
+
+# Link Blob DNS Zone to VNet
+resource "azurerm_private_dns_zone_virtual_network_link" "blob_vnet_link" {
+  name                  = "${local.name_prefix}-blob-dns-link"
+  resource_group_name   = azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.blob_dns.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+  tags                  = var.tags
+}
+
+# Link SQL DNS Zone to VNet
+resource "azurerm_private_dns_zone_virtual_network_link" "sql_vnet_link" {
+  name                  = "${local.name_prefix}-sql-dns-link"
+  resource_group_name   = azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.sql_dns.name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+  tags                  = var.tags
+}
+
+# Private Endpoint for Storage Account
+resource "azurerm_private_endpoint" "storage_pe" {
+  name                = "${local.name_prefix}-storage-pe"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  subnet_id           = azurerm_subnet.subnet_pe.id
+
+  private_service_connection {
+    name                           = "${local.name_prefix}-storage-psc"
+    private_connection_resource_id = azurerm_storage_account.sa.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name                 = "storage-dns-group"
+    private_dns_zone_ids = [azurerm_private_dns_zone.blob_dns.id]
+  }
+
+  tags = var.tags
+}
