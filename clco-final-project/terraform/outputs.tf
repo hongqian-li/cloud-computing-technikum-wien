@@ -27,3 +27,8 @@ output "web_app_url" {
   description = "Web app URL"
   value       = azurerm_linux_web_app.app.default_hostname
 }
+
+output "app_gateway_public_ip" {
+  description = "Application Gateway public IP"
+  value       = azurerm_public_ip.appgw_pip.ip_address
+}

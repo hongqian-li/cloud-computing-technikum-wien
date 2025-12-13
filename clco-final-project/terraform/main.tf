@@ -308,3 +308,79 @@ resource "azurerm_app_service_virtual_network_swift_connection" "app_vnet_integr
   app_service_id = azurerm_linux_web_app.app.id
   subnet_id      = azurerm_subnet.subnet_app.id
 }
+
+
+# ============================================
+# Phase 7: Application Gateway and Public IP
+# ============================================
+
+# Public IP for Application Gateway
+resource "azurerm_public_ip" "appgw_pip" {
+  name                = "${local.name_prefix}-appgw-pip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+
+  tags = var.tags
+}
+
+# Application Gateway
+resource "azurerm_application_gateway" "appgw" {
+  name                = "${local.name_prefix}-appgw"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  sku {
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
+    capacity = 1
+  }
+
+  gateway_ip_configuration {
+    name      = "appgw-ip-config"
+    subnet_id = azurerm_subnet.subnet_appgw.id
+  }
+
+  frontend_port {
+    name = "port-80"
+    port = 80
+  }
+
+  frontend_ip_configuration {
+    name                 = "appgw-frontend-ip"
+    public_ip_address_id = azurerm_public_ip.appgw_pip.id
+  }
+
+  backend_address_pool {
+    name  = "webapp-backend"
+    fqdns = [azurerm_linux_web_app.app.default_hostname]
+  }
+
+  backend_http_settings {
+    name                                = "webapp-http-settings"
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
+    pick_host_name_from_backend_address = true
+  }
+
+  http_listener {
+    name                           = "webapp-listener"
+    frontend_ip_configuration_name = "appgw-frontend-ip"
+    frontend_port_name             = "port-80"
+    protocol                       = "Http"
+  }
+
+  request_routing_rule {
+    name                       = "webapp-rule"
+    rule_type                  = "Basic"
+    http_listener_name         = "webapp-listener"
+    backend_address_pool_name  = "webapp-backend"
+    backend_http_settings_name = "webapp-http-settings"
+    priority                   = 100
+  }
+
+  tags = var.tags
+}
