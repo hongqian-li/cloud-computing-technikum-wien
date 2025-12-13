@@ -186,3 +186,52 @@ resource "azurerm_private_endpoint" "storage_pe" {
 
   tags = var.tags
 }
+
+# ============================================
+# Phase 5: SQL Server, Database and Private Endpoint
+# ============================================
+
+# SQL Server
+resource "azurerm_mssql_server" "sql_server" {
+  name                         = "${local.name_prefix}-sqlserver"
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  version                      = "12.0"
+  administrator_login          = var.sql_admin_username
+  administrator_login_password = var.sql_admin_password
+  minimum_tls_version          = "1.2"
+  public_network_access_enabled = false
+
+  tags = var.tags
+}
+
+# SQL Database
+resource "azurerm_mssql_database" "sql_db" {
+  name      = "${local.name_prefix}-sqldb"
+  server_id = azurerm_mssql_server.sql_server.id
+  sku_name  = "Basic"
+
+  tags = var.tags
+}
+
+# Private Endpoint for SQL Server
+resource "azurerm_private_endpoint" "sql_pe" {
+  name                = "${local.name_prefix}-sql-pe"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  subnet_id           = azurerm_subnet.subnet_pe.id
+
+  private_service_connection {
+    name                           = "${local.name_prefix}-sql-psc"
+    private_connection_resource_id = azurerm_mssql_server.sql_server.id
+    subresource_names              = ["sqlServer"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name                 = "sql-dns-group"
+    private_dns_zone_ids = [azurerm_private_dns_zone.sql_dns.id]
+  }
+
+  tags = var.tags
+}
