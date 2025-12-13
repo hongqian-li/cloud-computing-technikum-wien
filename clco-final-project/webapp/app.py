@@ -138,17 +138,18 @@ def get_all_files():
         try:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT blob_name, original_name, file_size, upload_time, file_type
+                SELECT id, blob_name, original_name, file_size, upload_time, file_type
                 FROM files
                 ORDER BY upload_time DESC
             """)
             for row in cursor.fetchall():
                 files.append({
-                    "blob_name": row[0],
-                    "original_name": row[1],
-                    "size": format_size(row[2]),
-                    "upload_time": row[3],
-                    "file_type": row[4]
+                    "id": row[0],
+                    "blob_name": row[1],
+                    "original_name": row[2],
+                    "size": format_size(row[3]),
+                    "upload_time": row[4],
+                    "file_type": row[5]
                 })
             cursor.close()
         except Exception as e:
@@ -156,6 +157,28 @@ def get_all_files():
         finally:
             conn.close()
     return files
+
+def delete_file_metadata(file_id):
+    """Delete file metadata from SQL database"""
+    conn = get_db_connection()
+    blob_name = None
+    if conn:
+        try:
+            cursor = conn.cursor()
+            # Get blob_name first
+            cursor.execute("SELECT blob_name FROM files WHERE id = ?", (file_id,))
+            result = cursor.fetchone()
+            if result:
+                blob_name = result[0]
+                # Delete from database
+                cursor.execute("DELETE FROM files WHERE id = ?", (file_id,))
+                conn.commit()
+            cursor.close()
+        except Exception as e:
+            print(f"Error deleting metadata: {e}")
+        finally:
+            conn.close()
+    return blob_name
 
 # ---------------------------------------------------------
 # Routes
@@ -181,6 +204,22 @@ def index():
 def health():
     """Health check endpoint"""
     return jsonify({"status": "healthy"}), 200
+
+@app.route("/debug/sql", methods=["GET"])
+def debug_sql():
+    """Debug endpoint to show SQL data"""
+    try:
+        files = get_all_files()
+        return jsonify({
+            "status": "success",
+            "file_count": len(files),
+            "files": files
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 500
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -255,6 +294,26 @@ def download(blob_name):
     except Exception as e:
         flash(f"Download error for '{blob_name}': {e}", "danger")
         return redirect(url_for("index"))
+
+@app.route("/delete/<int:file_id>", methods=["POST"])
+def delete(file_id):
+    """Delete file from both blob storage and database"""
+    try:
+        # Delete from database and get blob_name
+        blob_name = delete_file_metadata(file_id)
+        
+        if blob_name:
+            # Delete from blob storage
+            blob_client = container_client.get_blob_client(blob_name)
+            blob_client.delete_blob()
+            
+            flash(f"File deleted successfully", "success")
+        else:
+            flash("File not found", "warning")
+    except Exception as e:
+        flash(f"Delete error: {e}", "danger")
+    
+    return redirect(url_for("index"))
 
 # ---------------------------------------------------------
 # Local development
