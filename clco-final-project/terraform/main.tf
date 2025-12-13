@@ -1,3 +1,7 @@
+# ============================================
+# Phase 1: Resource Group and Network
+# ============================================
+
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 }
@@ -15,3 +19,4 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
 }
+
