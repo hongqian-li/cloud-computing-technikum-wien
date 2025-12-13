@@ -94,3 +94,37 @@ resource "azurerm_subnet_network_security_group_association" "subnet_app_nsg" {
   subnet_id                 = azurerm_subnet.subnet_app.id
   network_security_group_id = azurerm_network_security_group.nsg_app.id
 }
+
+# ============================================
+# Phase 3: Storage Account and Containers
+# ============================================
+
+# Storage Account - for uploads and tfstate
+resource "azurerm_storage_account" "sa" {
+  name                     = substr(replace(lower("${local.name_prefix}sa"), "-", ""), 0, 24)
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = var.storage_account_tier
+  account_replication_type = var.storage_account_replication_type
+  account_kind             = "StorageV2"
+
+  public_network_access_enabled   = true  #temporarily enabled for testing
+  allow_nested_items_to_be_public = false
+  https_traffic_only_enabled      = true
+
+  tags = var.tags
+}
+
+# Storage Container - uploads
+resource "azurerm_storage_container" "uploads" {
+  name                  = var.uploads_container_name
+  storage_account_name  = azurerm_storage_account.sa.name
+  container_access_type = "private"
+}
+
+# Storage Container - tfstate
+resource "azurerm_storage_container" "tfstate" {
+  name                  = var.tfstate_container_name
+  storage_account_name  = azurerm_storage_account.sa.name
+  container_access_type = "private"
+}
