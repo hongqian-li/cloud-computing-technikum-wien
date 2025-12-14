@@ -108,14 +108,14 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = var.storage_account_replication_type
   account_kind             = "StorageV2"
 
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true # Set to true to allow private endpoints
   allow_nested_items_to_be_public = false
   https_traffic_only_enabled      = true
 
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
-  }
+  #network_rules {
+  #  default_action = "Deny"
+  #  bypass         = ["AzureServices"]
+  #}
   
   tags = var.tags
 }
