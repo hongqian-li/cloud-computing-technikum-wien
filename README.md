@@ -73,7 +73,7 @@ Built a file-sharing web application using Azure services. Users can upload, dow
 
 The trickiest part was getting private endpoints and DNS zones working correctly. DNS is always the problem.
 
-[See detailed docs →](./final-project/)
+[See detailed docs →](https://github.com/hongqian-li/cloud-computing-technikum-wien/tree/main/clco-final-project)
 
 ## Main Things I Learned
 
