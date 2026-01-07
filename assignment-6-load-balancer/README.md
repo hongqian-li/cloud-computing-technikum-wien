@@ -171,16 +171,3 @@ The Load Balancer automatically:
 Hongqian Li, Bienias Kamil, Paradzik Marko, Zelimchanow Chamberg, Ramazanov Muslim
 
 UAS Technikum Wien - Cloud Computing 
-
----
-
-## Need Help?
-
-1. Check the error message
-2. Google the error
-3. Ask your teammates
-4. Contact instructor
-
----
-
-That's it! 🎉
