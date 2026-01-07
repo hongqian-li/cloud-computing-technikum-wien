@@ -49,7 +49,7 @@ variable "budget_end_date" {
 variable "notification_emails" {
   description = "Emails to notify when budget threshold is met"
   type        = list(string)
-  default     = ["lucas.lhqcd@gmail.com", "wi25x010@technikum-wien.at"]
+  default     = ["student@example.com", "team-alerts@your-org.com"]
 }
 
 variable "notification_threshold" {
