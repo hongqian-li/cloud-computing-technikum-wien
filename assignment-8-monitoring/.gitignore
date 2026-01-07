@@ -1,0 +1,66 @@
+# ============================================
+# Terraform
+# ============================================
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+crash.*.log
+
+# Variables (may contain secrets)
+*.tfvars
+!terraform.tfvars.example
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config
+.terraformrc
+terraform.rc
+
+# ============================================
+# SSH Keys (CRITICAL - Never commit!)
+# ============================================
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+*.ppk
+
+# ============================================
+# Azure
+# ============================================
+.azure/
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+Thumbs.db
+*~
+
+# ============================================
+# IDEs
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.backup
