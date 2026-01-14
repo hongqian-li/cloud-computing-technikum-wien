@@ -16,7 +16,7 @@ This is my coursework from a semester exchange at UAS Technikum Wien in Vienna. 
 ├── assignment-6-loadbalancer/ # Load balancer setup
 ├── assignment-7-backup/       # Managed disks and backup
 ├── assignment-8-monitoring/   # VM monitoring
-└── final-project/             # File sharing app
+└── azure-cloud-file-sharing-app/             # File sharing app
 ```
 
 ## Assignments
