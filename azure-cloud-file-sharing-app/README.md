@@ -28,6 +28,8 @@ Azure Web App (Flask)
 
 All within Virtual Network
 ```
+## Architecture
+![cloud-computing-final-project-diagram](https://github.com/user-attachments/assets/64c6aa7d-b528-4edc-9bcc-cbef700cc91a)
 
 ### Key Features
 
